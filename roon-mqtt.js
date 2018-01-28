@@ -59,9 +59,6 @@ var options = {
 	
 	mqtt_client.on('message', function (topic, message ) {
 		if ( debug ) { console.log( 'received mqtt packet: topic=%s, message=%s', topic, message); }
-		
-		// Hugo2C/Wohnzimmer/Roon
-		console.log(topic);
 		topic = topic.replace(mysettings.mqtttopic,"roon",)
 		var topic_split = topic.split("/");
 		if ( typeof roon_core !== 'undefined' && topic_split[0] === "roon" ) {
