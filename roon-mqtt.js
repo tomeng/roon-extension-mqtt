@@ -11,7 +11,7 @@ var RoonApi 			= require("node-roon-api"),
 
 
 function mqtt_publish_JSON( mqttbase, mqtt_client, jsondata ) {
-	mqtt_client.publish('roon/online','true');
+	mqtt_client.publish(mysettings.mqtttopic+'/online','true');
 	for ( var attribute in jsondata ) {
 		if ( typeof jsondata[attribute] === 'object' ) {
 			mqtt_publish_JSON( mqttbase+'/'+attribute, mqtt_client, jsondata[attribute] );
@@ -45,9 +45,9 @@ var options = {
 	mqtt_client = mqtt.connect('mqtt://' + mysettings.mqttbroker + ':' + mysettings.mqttport,options);
 
 	mqtt_client.on('connect', () => {
-		mqtt_client.publish('roon/online','true');
-		mqtt_client.subscribe('roon/+/command');
-		mqtt_client.subscribe('roon/+/outputs/+/volume/set');
+		mqtt_client.publish(mysettings.mqtttopic+'/online','true');
+		mqtt_client.subscribe(mysettings.mqtttopic+'/+/command');
+		mqtt_client.subscribe(mysettings.mqtttopic+'/+/outputs/+/volume/set');
 		//mqtt_client.subscribe('roon/#');
 		roon_svc_status.set_status("MQTT Broker Connected", false);
 		
@@ -59,6 +59,10 @@ var options = {
 	
 	mqtt_client.on('message', function (topic, message ) {
 		if ( debug ) { console.log( 'received mqtt packet: topic=%s, message=%s', topic, message); }
+		
+		// Hugo2C/Wohnzimmer/Roon
+		console.log(topic);
+		topic = topic.replace(mysettings.mqtttopic,"roon",)
 		var topic_split = topic.split("/");
 		if ( typeof roon_core !== 'undefined' && topic_split[0] === "roon" ) {
 			if ( debug ) { console.log('we know of zones: %s', Object.keys(roon_zones) );}
@@ -176,7 +180,7 @@ var roon = new RoonApi({
 							var zoneid=data[zoneevent][zoneindex];
 							zonename = roonzone_find_by_id(zoneid);
 							if ( debug ) { console.log('removed zone with id %s and name %s', zoneid, zonename); }
-							mqtt_publish_JSON( 'roon/'+zonename, mqtt_client, { 'state' : 'removed' });
+							mqtt_publish_JSON( mysettings.mqtttopic+'/'+zonename, mqtt_client, { 'state' : 'removed' });
 							delete roon_zones[zonename];
 						}
 					} else {
@@ -189,7 +193,7 @@ var roon = new RoonApi({
 							roon_zones[zonename] = JSON.parse(JSON.stringify(zonedata));
 							// console.log('sending state for zone %s', zonename);
 							for ( var attribute in zonedata ) {
-								mqtt_publish_JSON( 'roon/'+zonename, mqtt_client, zonedata);
+								mqtt_publish_JSON( mysettings.mqtttopic+'/'+zonename, mqtt_client, zonedata);
 							}
 						}
 					}
