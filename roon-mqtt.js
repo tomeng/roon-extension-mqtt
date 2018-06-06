@@ -147,7 +147,7 @@ var roon = new RoonApi({
 							var zonedata = roonzone_json_changeoutputs(zones[index]);
 							var zonename = zonedata.display_name;
 							//var regex = '';
-							zonename = zonename.replace(/ \+.*/,'');
+							//zonename = zonename.replace(/ \+.*/,'');
 							roon_zones[zonename] = JSON.parse(JSON.stringify(zonedata));
 							console.log('sending state for zone %s', zonename);
 							for ( var attribute in zonedata ) {
