@@ -185,13 +185,15 @@ var roon = new RoonApi({
 						for( var index in zones ) {
 							var zonedata = roonzone_json_changeoutputs(zones[index]);
 							var zonename = zonedata.display_name;
-							//var regex = '';
-													
-							//zonename = zonename.replace(/ \+.*/,'');
-							roon_zones[zonename] = JSON.parse(JSON.stringify(zonedata));
-							// console.log('sending state for zone %s', zonename);
-							for ( var attribute in zonedata ) {
-								mqtt_publish_JSON( mysettings.mqtttopic+'/'+zonename, mqtt_client, zonedata);
+							
+							if( zonename !== 'undefined') {
+								//var regex = '';													
+								zonename = zonename.replace(/ \+.*/,'');
+								roon_zones[zonename] = JSON.parse(JSON.stringify(zonedata));
+								// console.log('sending state for zone %s', zonename);
+								for ( var attribute in zonedata ) {
+									mqtt_publish_JSON( mysettings.mqtttopic+'/'+zonename, mqtt_client, zonedata);
+								}
 							}
 						}
 					}
