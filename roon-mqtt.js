@@ -11,7 +11,7 @@ var RoonApi 			= require("node-roon-api"),
 
 
 function mqtt_publish_JSON( mqttbase, mqtt_client, jsondata ) {
-	mqtt_client.publish(mysettings.mqtttopic+'/online','true');
+	// mqtt_client.publish(mysettings.mqtttopic+'/online','true');
 	for ( var attribute in jsondata ) {
 		if ( typeof jsondata[attribute] === 'object' ) {
 			mqtt_publish_JSON( mqttbase+'/'+attribute, mqtt_client, jsondata[attribute] );
