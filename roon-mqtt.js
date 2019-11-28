@@ -1,6 +1,6 @@
 const mqtt = require('mqtt');
 var mqtt_client, roon_core, roon_zones={};
-var debug = true;
+var debug = false;
 var trace = false;
 var mqtt_data={};
 
@@ -24,23 +24,7 @@ function mqtt_publish_JSON( mqttbase, mqtt_client, jsondata ) {
 
 }
 
-
 function mqtt_get_client() {
-
-var clientId = 'mqttjs_' + Math.random().toString(16).substr(2, 8)
-
-var options = {
-  keepalive: 10,
-  clientId: clientId,
-  protocolId: 'MQTT',
-  protocolVersion: 4,
-  clean: true,
-  reconnectPeriod: 1000,
-  connectTimeout: 30 * 1000,
-  username: mysettings.mqttuser,
-  password: mysettings.mqttpass,
-  rejectUnauthorized: false
-}
 
 	mqtt_client = mqtt.connect('mqtt://' + mysettings.mqttbroker + ':' + mysettings.mqttport,options);
 
@@ -53,13 +37,18 @@ var options = {
 		
 	});
 
+
+
+
 	mqtt_client.on('offline', () => {
 		roon_svc_status.set_status("MQTT Broker Offline", true);
 	});
 	
 	mqtt_client.on('message', function (topic, message ) {
 		if ( debug ) { console.log( 'received mqtt packet: topic=%s, message=%s', topic, message); }
-		topic = topic.replace(mysettings.mqtttopic,"roon",)
+
+		topic.replace(mysettings.mqtttopic,"roon");
+
 		var topic_split = topic.split("/");
 		if ( typeof roon_core !== 'undefined' && topic_split[0] === "roon" ) {
 			if ( debug ) { console.log('we know of zones: %s', Object.keys(roon_zones) );}
@@ -90,6 +79,9 @@ var options = {
 		}
 		
 	});
+
+
+
 }
 
 function roonzone_find_by_id(zoneid) {
@@ -153,14 +145,16 @@ function makelayout(settings) {
 
 
    return l;
+
+   return l;
 }
 
 
 var roon = new RoonApi({
-	extension_id:        'nl.fjgalesloot.mqtt_te',
-	display_name:        "MQTT Extension (TE)",
+	extension_id:        'nl.fjgalesloot.mqtt',
+	display_name:        "MQTT Extension",
 	display_version:     "0.1",
-	publisher:           'Floris Jan Galesloot (Modified Tom Engelhardt)',
+	publisher:           'Floris Jan Galesloot',
 	email:               'fjgalesloot@triplew.nl',
 	website:             'https://github.com/fjgalesloot/roon-extension-mqtt',
 
@@ -186,12 +180,11 @@ var roon = new RoonApi({
 							var zonedata = roonzone_json_changeoutputs(zones[index]);
 							var zonename = zonedata.display_name;
 							
-							if ( typeof zonename !== 'undefined' && zonename )
-							{  
-								//var regex = '';													
+							if (typeof zonename !== 'undefined' && zonename) {
+								//var regex = '';
 								zonename = zonename.replace(/ \+.*/,'');
 								roon_zones[zonename] = JSON.parse(JSON.stringify(zonedata));
-								// console.log('sending state for zone %s', zonename);
+								console.log('sending state for zone %s', zonename);
 								for ( var attribute in zonedata ) {
 									mqtt_publish_JSON( mysettings.mqtttopic+'/'+zonename, mqtt_client, zonedata);
 								}
