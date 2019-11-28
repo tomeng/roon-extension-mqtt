@@ -166,10 +166,10 @@ function makelayout(settings) {
 
 
 var roon = new RoonApi({
-	extension_id:        'nl.fjgalesloot.mqtt',
-	display_name:        "MQTT Extension",
+	extension_id:        'nl.fjgalesloot.mqtt_te',
+	display_name:        "MQTT Extension (TE)",
 	display_version:     "0.1",
-	publisher:           'Floris Jan Galesloot',
+	publisher:           'Floris Jan Galesloot (Modified Tom Engelhardt)',
 	email:               'fjgalesloot@triplew.nl',
 	website:             'https://github.com/fjgalesloot/roon-extension-mqtt',
 
