@@ -26,6 +26,21 @@ function mqtt_publish_JSON( mqttbase, mqtt_client, jsondata ) {
 
 function mqtt_get_client() {
 
+	var clientId = 'mqttjs_' + Math.random().toString(16).substr(2, 8)
+	var options = {
+	  keepalive: 10,
+	  clientId: clientId,
+	  protocolId: 'MQTT',
+	  protocolVersion: 4,
+	  clean: true,
+	  reconnectPeriod: 1000,
+	  connectTimeout: 30 * 1000,
+	  username: mysettings.mqttuser,
+	  password: mysettings.mqttpass,
+	  rejectUnauthorized: false
+	}
+
+
 	mqtt_client = mqtt.connect('mqtt://' + mysettings.mqttbroker + ':' + mysettings.mqttport,options);
 
 	mqtt_client.on('connect', () => {
