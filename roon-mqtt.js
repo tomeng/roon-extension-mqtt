@@ -28,16 +28,16 @@ function mqtt_get_client() {
 
 	var clientId = 'mqttjs_' + Math.random().toString(16).substr(2, 8)
 	var options = {
-	  keepalive: 10,
-	  clientId: clientId,
-	  protocolId: 'MQTT',
-	  protocolVersion: 4,
-	  clean: true,
-	  reconnectPeriod: 1000,
-	  connectTimeout: 30 * 1000,
+	  //keepalive: 10,
+	  //clientId: clientId,
+	  //protocolId: 'MQTT',
+	  //protocolVersion: 4,
+	  //clean: true,
+	  //reconnectPeriod: 1000,
+	  //connectTimeout: 30 * 1000,
 	  username: mysettings.mqttuser,
 	  password: mysettings.mqttpass,
-	  rejectUnauthorized: false
+	  //rejectUnauthorized: false
 	}
 
 
