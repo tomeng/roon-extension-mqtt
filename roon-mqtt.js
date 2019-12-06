@@ -65,6 +65,9 @@ function mqtt_get_client() {
 		topic.replace(mysettings.mqtttopic,"roon");
 
 		var topic_split = topic.split("/");
+		
+		console.log(topic_split);
+		
 		if ( typeof roon_core !== 'undefined' && topic_split[0] === "roon" ) {
 			if ( debug ) { console.log('we know of zones: %s', Object.keys(roon_zones) );}
 			if ( typeof roon_zones[topic_split[1]] === "undefined" ) {
