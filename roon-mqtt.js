@@ -1,6 +1,6 @@
 const mqtt = require('mqtt');
 var mqtt_client, roon_core, roon_zones={};
-var debug = true;
+var debug = false;
 var trace = false;
 var mqtt_data={};
 
@@ -62,11 +62,9 @@ function mqtt_get_client() {
 	mqtt_client.on('message', function (topic, message ) {
 		if ( debug ) { console.log( 'received mqtt packet: topic=%s, message=%s', topic, message); }
 
-		topic.replace(mysettings.mqtttopic,"roon");
+		topic = topic.replace(mysettings.mqtttopic,"roon");
 
 		var topic_split = topic.split("/");
-		
-		console.log(topic_split);
 		
 		if ( typeof roon_core !== 'undefined' && topic_split[0] === "roon" ) {
 			if ( debug ) { console.log('we know of zones: %s', Object.keys(roon_zones) );}
